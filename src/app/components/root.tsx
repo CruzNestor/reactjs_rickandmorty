@@ -1,20 +1,51 @@
 import { useState } from 'react';
-import { Box, Divider, Drawer, IconButton, List, Toolbar, Typography, styled } from '@mui/material';
+import { Box, Divider, Drawer, IconButton, List, Toolbar, Typography } from '@mui/material';
+import { styled, Theme, CSSObject, useTheme } from '@mui/material/styles';
 import { Outlet } from 'react-router-dom';
-import MainContent from './MainContent';
+import Logo from '../../assets/images/logo.png';
 import MenuIcon from '@mui/icons-material/Menu';
 import MyAppBar from './MyAppBar';
 import ListItemLink from './ListItemLink';
 
 const drawerWidth = 240;
 
-export default function Root() {
-  const [open, setOpen] = useState(window.innerWidth <= 760 ? false : true);
-  const [screenWidth, setScreenWidth] = useState(window.innerWidth)
+const openedMixin = (theme: Theme): CSSObject => ({
+  width: drawerWidth,
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.enteringScreen,
+  }),
+  overflowX: 'hidden',
+});
 
-  const myListItem : Record<string, string>[] = [
-    {name: 'Home', link: '/'},
-    {name: 'Characters', link: '/characters'}
+const closedMixin = (theme: Theme): CSSObject => ({
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  overflowX: 'hidden',
+  width: `calc(${theme.spacing(7)} + 1px)`,
+  [theme.breakpoints.up('sm')]: {
+    width: `calc(${theme.spacing(8)} + 1px)`,
+  },
+});
+
+const DrawerHeader = styled('div')(({ theme }) => ({
+  display: 'flex',
+  textAlign: 'center',
+  alignItems: 'center',
+  paddingLeft: '12px',
+  ...theme.mixins.toolbar
+}));
+
+export default function Root() {
+  const [open, setOpen] = useState(window.innerWidth < 900 ? false : true);
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth)
+  const theme = useTheme() 
+
+  const myListItem: Record<string, string>[] = [
+    { name: 'Home', link: '/', icon: 'home'},
+    { name: 'Characters', link: '/characters', icon: 'person'}
   ]
 
   window.addEventListener('resize', () => {
@@ -26,22 +57,15 @@ export default function Root() {
   };
 
   const handleCloseDrawerMobile = () => {
-    if(window.innerWidth <= 760){
+    if (window.innerWidth <= 760) {
       setOpen(false)
     }
   }
 
-  const DrawerHeader = styled('div')(({ theme }) => ({
-    display: 'flex',
-    alignItems: 'center',
-    padding: theme.spacing(0, 1),
-    ...theme.mixins.toolbar
-  }));
-
   return (
     <Box sx={{ display: 'flex', padding: 0 }}>
       {/* Appbar */}
-      <MyAppBar position="fixed" elevation={0} drawerWidth={drawerWidth} open={open}>
+      <MyAppBar position="fixed" elevation={0} open={open} drawerWidth={drawerWidth}>
         <Toolbar>
           <IconButton
             aria-label="open drawer"
@@ -56,31 +80,42 @@ export default function Root() {
       {/* End Appbar */}
 
       {/* Drawer */}
-      <Box 
-        component="nav" 
-        aria-label="mailbox folders" 
-        sx={{ 
-          flexShrink: { sm: 0 },
-          width: { sm: drawerWidth }, 
-        }}
-      >
         <Drawer
           open={open}
           onClose={handleDrawerToggle}
-          variant={screenWidth <= 900 ? 'temporary': 'persistent'}
+          variant={screenWidth < 900 ? 'temporary': 'permanent'}
           ModalProps={{
-            keepMounted: screenWidth <= 900 ? true : false
+            keepMounted: screenWidth < 900 ? true : false
           }}
           sx={{
-            '& .MuiDrawer-paper': {
-              boxSizing: 'border-box', 
-              width: drawerWidth
-            }
+            ...(open && {
+              ...openedMixin(theme),
+              '& .MuiDrawer-paper': openedMixin(theme),
+            }),
+            ...(!open && {
+              ...closedMixin(theme),
+              '& .MuiDrawer-paper': closedMixin(theme),
+            }),
           }}
         >
           <DrawerHeader>
-            <Typography variant="h6" noWrap component="div" color="MenuText">
-              Rick and Morty API
+            <Box
+              component='img'
+              alt="Not found"
+              width='40px'
+              src={Logo}
+            />
+            <Typography 
+              variant='subtitle1'
+              component="div"
+              color="MenuText"
+              noWrap  
+              sx={{
+                opacity: open ? 1 : 0,
+                paddingLeft: '8px'
+              }}
+            >
+              Rick and Morty
             </Typography>
           </DrawerHeader>
 
@@ -88,24 +123,25 @@ export default function Root() {
 
           <List>
             {myListItem.map((element) => (
-              <ListItemLink 
-                key={element.link} 
-                to={element.link} 
-                primary={element.name} 
+              <ListItemLink
+                open={open}
+                key={element.link}
+                to={element.link}
+                primary={element.name}
                 onPressedItem={handleCloseDrawerMobile}
+                icon={element.icon}
               />
             ))}
           </List>
-          
+
         </Drawer>
-      </Box>
       {/* End Drawer */}
 
       {/* MainContent */}
-      <MainContent drawerWidth={drawerWidth} open={open}>
+      <Box component="main" sx={{ backgroundColor: '#EEF2F6', flexGrow: 1 , minHeight: '100vh',}}>
         <Toolbar />
         <Outlet />
-      </MainContent>
+      </Box>
       {/* End MainContent */}
     </Box>
   );

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { CharacterEntity } from "../../domain/entities/CharacterEntity";
 import { AxiosException } from '../../../../app/errors/exceptions';
+import { getNumberPageFromUrl, getSearchTextFromUrl } from '../../../../app/utils/PathManager';
 
 
 export interface CharacterDataSource {
@@ -14,7 +15,7 @@ export class CharacterDataSourceImpl implements CharacterDataSource {
     return await axios.get(
       url
     ).then(async (response) => {
-      const currentPage =  this.getNumberPageFromUrl(url)
+      const currentPage =  getNumberPageFromUrl(url)
       for (const [index, element] of response.data.results.entries()) {
         const firstSeen = await this.getFirstSeenIn(element['episode'][0])
         response.data.results[index]['first_seen'] = firstSeen
@@ -35,8 +36,8 @@ export class CharacterDataSourceImpl implements CharacterDataSource {
     return await axios.get(
       url
     ).then(async (response) => {
-      const currentPage = this.getNumberPageFromUrl(url)
-      const searchText = this.getSearchTextFromUrl(url)
+      const currentPage = getNumberPageFromUrl(url)
+      const searchText = getSearchTextFromUrl(url)
 
       let info = {count: 1, next: null, pages: 1, prev: null}
       let results = []
@@ -70,22 +71,6 @@ export class CharacterDataSourceImpl implements CharacterDataSource {
       const result : string = response.data['name']
       return result
     })
-  }
-
-  getNumberPageFromUrl(url: string) : number {
-    const match = url.match(/(?:\/page\/|[?&]page=)([1-9]\d*)/)
-    if (match) {
-      return Number(match[1]);
-    }
-    return 1;
-  }
-
-  getSearchTextFromUrl(url: string) : string {
-    const match = url.match(/(?:name=)([\w\s]+\w*)/)
-    if (match) {
-      return match[1];
-    }
-    return '';
   }
 }
 

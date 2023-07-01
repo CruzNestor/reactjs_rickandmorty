@@ -53,7 +53,7 @@ export default function CharacterGrid() {
       >
         {data.results.map((element, index) => {
           return (
-            <Grid key={index} item xs={12} sm={6} md={3}>
+            <Grid key={index} item xs={6} sm={6} md={3}>
               <CharacterCard data={element}/>
             </Grid>
           )
@@ -74,7 +74,6 @@ export default function CharacterGrid() {
     }
   }, [dispatch, buildData, state])
 
-  
   const getPage = (url: string) => {
     dispatch(getCharacters(url))
   }

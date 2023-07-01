@@ -26,59 +26,66 @@ export default function CharacterCard (props: Props) {
       variant='outlined' 
       elevation={0}
       sx={{
-        height: {xs: 'auto'}
+        height: { xs: 'auto'},
       }}
     >
-      <CardActionArea sx={{display: 'flex'}}>
-        <Fade in={true} timeout={2000} >
-          <CardMedia
-            component="img"
-            src={data['image']}
-            alt="Not found"
-            sx={{
-              width: { xs: '120px', sm: '160px', md: '180px' },
-              height: { xs: '190px', sm: '220px',  md: '220px' },
-              objectFit: "fill" 
-            }}
-          />
-        </Fade>
+      <CardActionArea>
+        <Box component='div' display='flex' sx={{justifyContent: 'center', paddingTop: 2}}>
+          <Fade in={true} timeout={2000}>
+            <CardMedia
+              component="img"
+              src={data['image']}
+              alt="Not found"
+              sx={{
+                borderRadius: '50%',
+                width: { xs: '100px', sm: '160px', md: '160px' },
+                height: { xs: '100px', sm: '160px',  md: '160px' },
+                objectFit: "fill" 
+              }}
+            />
+          </Fade>
+        </Box>
+        
         <CardContent 
           sx={{
-            flex: 'auto', 
-            height: { xs:'190px', sm: '220px', md: '220px'} 
+            flex: 'auto',
+            minHeight: { xs: '200px', sm: '240px', md: '280px'},
           }}
         >
           <Typography 
             component="div"
             fontWeight='bold'
+            textAlign='center'
             sx={{ 
-              textTransform: 'uppercase', fontSize: { xs: 12, sm: 14, md: 16} 
+              textTransform: 'uppercase', fontSize: { xs: 12, sm: 14, md: 18} 
             }}
           >
             {data['name']}
           </Typography>
 
-          <Box display='flex'>
+          <Box display='flex' alignItems='center' justifyContent='center'>
             <Box marginRight='4px'>
               <CircleIcon style={{fontSize: 14, fill: `${statusColor}`}} /> 
             </Box>
-            <span>{data['status']} | {data['species']}</span>
+            <Typography textAlign='center' sx={{ fontSize: { xs: 12, sm: 14, md: 18} }}>
+              {data['status']} | {data['species']}
+            </Typography>
           </Box>
 
           <Box sx={{marginTop: {xs: 1, sm: 2 }}}>
-            <Typography component='div' variant='body2' color='darkgray' fontWeight='bold'>
+            <Typography component='div' color='darkgray' fontWeight='bold' sx={{ fontSize: { xs: 12, sm: 14, md: 18} }}>
               Last known location:
             </Typography>
-            <Typography component='div' variant='body2'>
+            <Typography component='div' sx={{ fontSize: { xs: 12, sm: 14, md: 18} }}>
               {data['location']['name']}
             </Typography>
           </Box>
 
           <Box sx={{marginTop: {xs: 1, sm: 2 }}}>
-            <Typography component='div' variant='body2' color='darkgray' fontWeight='bold'>
+            <Typography component='div' color='darkgray' fontWeight='bold' sx={{ fontSize: { xs: 12, sm: 14, md: 18} }}>
               First seen in:
             </Typography>
-            <Typography component='div' variant='body2'>
+            <Typography component='div' sx={{ fontSize: { xs: 12, sm: 14, md: 18} }}>
               {data['first_seen']}
             </Typography>
           </Box>

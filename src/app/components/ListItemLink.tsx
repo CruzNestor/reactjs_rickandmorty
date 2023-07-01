@@ -1,4 +1,4 @@
-import { ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
+import { Icon, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import { forwardRef } from "react";
 import { NavLink, LinkProps  } from "react-router-dom";
 
@@ -15,19 +15,41 @@ const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(itemProps, r
 });
 
 interface ListItemLinkProps {
-  icon?: React.ReactElement;
+  icon?: string;
+  open: boolean;
   primary: string;
   to: string;
   onPressedItem?: () => void;
 }
 
 export default function ListItemLink(props: ListItemLinkProps) {
-  const { icon, primary, to } = props;
+  const { icon, open, primary, to } = props;
   return (
-    <ListItem sx={{padding: '3px 10px'}}>
-      <ListItemButton component={Link} to={to} sx={{borderRadius: '5px'}} onClick={props.onPressedItem}>
-        {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
-        <ListItemText primary={primary} />
+    <ListItem sx={{display: 'block', padding: '3px 10px'}}>
+      <ListItemButton 
+        component={Link} 
+        to={to} 
+        onClick={props.onPressedItem}
+        sx={{
+          borderRadius: '5px',
+          minHeight: 48,
+          justifyContent: open ? 'initial' : 'center',
+          px: 2.5,
+        }}
+      >
+        {icon 
+          ? <ListItemIcon 
+              sx={{
+                minWidth: 0,
+                mr: open ? 3 : 'auto',
+                justifyContent: 'center',
+              }}
+            >
+              <Icon>{icon}</Icon>
+            </ListItemIcon> 
+          : null
+        }
+        <ListItemText primary={primary} sx={{ opacity: open ? 1 : 0  }}  />
       </ListItemButton>
     </ListItem>
   )

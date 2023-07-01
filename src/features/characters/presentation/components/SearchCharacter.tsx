@@ -117,7 +117,7 @@ export default function SearchCharacter() {
       <Grid container spacing={2} sx={{ padding: '16px' }}>
         {data.results.map((element) => {
           return (
-            <Grid key={element['id']} item xs={12} sm={6} md={3}>
+            <Grid key={element['id']} item xs={6} sm={6} md={3}>
               <CharacterCard data={element} />
             </Grid>
           )

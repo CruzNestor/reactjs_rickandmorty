@@ -16,19 +16,6 @@ export default class CharacterRepositoryImpl implements CharacterRepository {
   }
 
   async searchCharacter(url: string): Promise<CharacterEntity> {
-    /* if(Number(text)){
-      return await this.source.searchCharacterById(text)
-    } else {
-      return await this.source.searchCharacterByName(text)
-    } */
     return await this.source.searchCharacter(url)
-  }
-
-  isNumber(value: string) : boolean {
-    const num = Number(value)
-    if(typeof num == 'number'){
-      return true
-    }
-    return false
   }
 }
