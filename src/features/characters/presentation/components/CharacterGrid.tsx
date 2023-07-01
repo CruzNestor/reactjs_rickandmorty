@@ -64,6 +64,7 @@ export default function CharacterGrid() {
 
   useEffect(() => {
     if(state.data === null){
+      setDynamicComponent(buildLoading())
       dispatch(getCharacters(CHARACTER_URL))
     } else if(state.loading) {
       setDynamicComponent(buildLoading())
